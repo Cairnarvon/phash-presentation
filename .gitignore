@@ -1,0 +1,4 @@
+slides/*
+!slides/clod
+!slides/*.png
+!slides/*.tex

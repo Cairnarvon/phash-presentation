@@ -1,0 +1,7 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{diff}\PY{p}{(}\PY{n}{h1}\PY{p}{,} \PY{n}{h2}\PY{p}{)}\PY{p}{:}
+    \PY{n}{acc} \PY{o}{=} \PY{l+m+mi}{0}
+    \PY{k}{for} \PY{n}{a}\PY{p}{,} \PY{n}{b} \PY{o+ow}{in} \PY{n+nb}{zip}\PY{p}{(}\PY{n}{h1}\PY{p}{,} \PY{n}{h2}\PY{p}{)}\PY{p}{:}
+        \PY{n}{acc} \PY{o}{+}\PY{o}{=} \PY{n+nb}{abs}\PY{p}{(}\PY{n}{a} \PY{o}{-} \PY{n}{b}\PY{p}{)}
+    \PY{k}{return} \PY{n}{acc}
+\end{Verbatim}

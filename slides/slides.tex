@@ -1,0 +1,331 @@
+\documentclass{beamer}
+\usepackage[dutch]{babel}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{fancyvrb}
+
+\input{clod/preamble.tex}   % Pygmentize preamble
+
+\title{Perceptual Hashes}
+\subtitle{Een inleiding}
+\author{Koen Crolla}
+\date{24 mei 2012}
+
+\begin{document}
+
+{\logo{\includegraphics[scale=.2]{LogoGT.png}} \maketitle}
+
+\begin{frame}
+  \frametitle{Vooraf}
+
+  Alle code, afbeeldingen, slides:
+
+  \centering
+
+  \LARGE \url{https://github.com/Cairnarvon/phash-presentation}
+
+\end{frame}
+
+
+%% Introduction
+
+\begin{frame}
+  \frametitle{Probleem}
+
+  We hebben een afbeelding:
+
+  \centering
+
+  \includegraphics[height=2in]{../target.png}
+
+\end{frame}
+
+\begin{frame}
+  ... en een hoeveelheid andere afbeeldingen:
+
+  \centering
+
+  \begin{tabular}{cccccccc}
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/01.jpg} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/02.jpg} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/03.jpg} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/04.jpg} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/05.jpg} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/06.png} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/07.jpg} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/08.jpg} \\
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/09.jpg} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/10.jpg} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/11.jpg} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/12.jpg} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/13.jpg} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/14.jpg} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/15.jpg} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/16.png} \\ 
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/17.jpg} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/18.jpg} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/19.png} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/20.jpg} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/21.png} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/22.jpg} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/23.jpg} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/24.jpg} \\
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/25.jpg} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/26.jpg} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/27.jpg} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/28.jpg} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/29.jpg} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/30.jpg} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/31.jpg} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/32.jpg} \\
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/33.jpg} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/34.jpg} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/35.png} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/36.png} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/37.jpg} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/38.jpg} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/39.png} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/40.jpg} \\
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/41.png} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/42.jpg} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/43.jpg} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/44.jpg} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/45.jpg} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/46.jpg} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/47.jpg} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/48.jpg} \\
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/49.jpg} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/50.jpg} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/51.jpg} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/52.png} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/53.jpg} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/54.jpg} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/55.png} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/56.jpg} \\
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/57.jpg} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/58.jpg} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/59.png} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/60.png} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/61.jpg} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/62.jpg} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/63.jpg} &
+    \includegraphics[height=.3in,width=.3in,keepaspectratio]{../images/64.jpg}
+  \end{tabular}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Ideaal}
+
+  \centering
+
+  Input:
+
+  \includegraphics[scale=.1]{../target.png}
+
+  Output:
+
+  \begin{tabular}{ccccc}
+    \includegraphics[scale=.1]{../images/60.png} &
+    \includegraphics[scale=.1]{../images/61.jpg} &
+    \includegraphics[scale=.1]{../images/62.jpg} &
+    \includegraphics[scale=.1]{../images/63.jpg} &
+    \includegraphics[scale=.1]{../images/64.jpg}
+  \end{tabular}
+
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Vorm}
+
+  \input{clod/vorm.tex}
+
+\end{frame}
+
+
+%% Colour histogram
+
+\begin{frame}
+  \frametitle{Eerste poging: kleurenhistogram}
+
+  \begin{itemize}
+    \pause \item Probleem:
+
+    \begin{center}
+      \includegraphics[scale=.1]{../images/59.png} 
+      \hspace{.2in}
+      \includegraphics[scale=.2]{../images/59.png}
+    \end{center}
+
+    \pause \item Probleem: veel te veel informatie
+
+    \pause
+
+    \begin{center}
+      \includegraphics[scale=.2]{../images/41.png}
+      \raisebox{.58in}{$\Longrightarrow$}
+      \includegraphics[scale=.2]{posterized.png}
+    \end{center}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Gemakkelijk!}
+
+  \input{clod/phash1.tex}
+
+  \pause
+
+  \input{clod/diff1.tex}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Resultaat}
+
+  \centering
+
+  \begin{tabular}{ccc}
+    \includegraphics[height=1in,width=1in,keepaspectratio]{../images/60.png} &
+    \includegraphics[height=1in,width=1in,keepaspectratio]{../images/64.jpg} &
+    \includegraphics[height=1in,width=1in,keepaspectratio]{../images/61.jpg} \\
+    0 & 382 & 1594 \\&&\\
+    \includegraphics[height=1in,width=1in,keepaspectratio]{../images/63.jpg} &
+    \includegraphics[height=1in,width=1in,keepaspectratio]{../images/57.jpg} &
+    \includegraphics[height=1in,width=1in,keepaspectratio]{../images/12.jpg} \\
+    13762 & 13826 & 13830
+  \end{tabular}
+
+\end{frame}
+
+
+%% Average hash
+
+\begin{frame}
+  \frametitle{Tweede poging: average hash}
+
+  \begin{itemize}
+    \pause \item Kleuren zijn minder informatief dan vormen
+
+    \pause
+
+    \begin{center}
+      \includegraphics[height=1in]{../target.png}
+      \raisebox{.48in}{$\Longrightarrow$}
+      \includegraphics[height=1in]{bw.png}
+    \end{center}
+
+    \pause \item Nog te gevoelig voor details
+
+    \pause
+
+    \begin{center}
+      \includegraphics[height=1in]{bw.png}
+      \raisebox{.48in}{$\Longrightarrow$}
+      \includegraphics[height=1in]{bw_small.png}
+    \end{center}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Gemakkelijk!}
+
+  \input{clod/phash2.tex}
+
+  \pause
+
+  \input{clod/diff2.tex}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Resultaat}
+
+  \centering
+
+  \begin{tabular}{ccc}
+    \includegraphics[height=1in,width=1in,keepaspectratio]{../images/60.png} &
+    \includegraphics[height=1in,width=1in,keepaspectratio]{../images/61.jpg} &
+    \includegraphics[height=1in,width=1in,keepaspectratio]{../images/64.jpg} \\
+    0 & 0 & 0 \\&&\\
+    \includegraphics[height=1in,width=1in,keepaspectratio]{../images/62.jpg} &
+    \includegraphics[height=1in,width=1in,keepaspectratio]{../images/25.jpg} &
+    \includegraphics[height=1in,width=1in,keepaspectratio]{../images/31.jpg} \\
+    0 & 26 & 26
+  \end{tabular}
+
+\end{frame}
+
+
+%% Discrete cosine transform
+
+\begin{frame}
+  \frametitle{Derde poging: discrete cosine transform}
+
+  \pause
+
+  {\bf Drukt een reeks datapoints uit als de som van cosinusfuncties van
+       verschillende frequenties}
+
+  \begin{itemize}
+    \pause \item Ook gebruikt in JPEG (en MP3)
+    \pause \item Laat ons toe de kleine hoge-frequentie componenten te laten
+                 vallen
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Gemakkelijk?}
+
+  \input{clod/phash3.tex}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Resultaat}
+
+  \centering
+
+  \begin{tabular}{ccc}
+    \includegraphics[height=1in,width=1in,keepaspectratio]{../images/60.png} &
+    \includegraphics[height=1in,width=1in,keepaspectratio]{../images/62.jpg} &
+    \includegraphics[height=1in,width=1in,keepaspectratio]{../images/61.jpg} \\
+    0 & 0 & 2 \\&&\\
+    \includegraphics[height=1in,width=1in,keepaspectratio]{../images/64.jpg} &
+    \includegraphics[height=1in,width=1in,keepaspectratio]{../images/63.jpg} &
+    \includegraphics[height=1in,width=1in,keepaspectratio]{../images/32.jpg} \\
+    4 & 22 & 23
+  \end{tabular}
+
+\end{frame}
+
+
+%% Extro
+
+\begin{frame}
+  \frametitle{Oefeningen voor thuis}
+
+  \centering
+
+  \begin{tabular}{cc}
+    Rotatie? & Reflectie? \\
+    \includegraphics[scale=.25,angle=90]{../target.png} &
+    \reflectbox{\includegraphics[scale=.25]{../target.png}}
+  \end{tabular}
+
+  \pause Nodig?
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Nogmaals}
+
+  Alle code, afbeeldingen, slides:
+
+  \centering
+
+  \LARGE \url{https://github.com/Cairnarvon/phash-presentation}
+
+\end{frame}
+
+\end{document}

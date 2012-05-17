@@ -1,0 +1,16 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{math}
+
+\PY{k}{def} \PY{n+nf}{phash}\PY{p}{(}\PY{n}{im}\PY{p}{)}\PY{p}{:}
+    \PY{n}{im} \PY{o}{=} \PY{n}{im}\PY{o}{.}\PY{n}{resize}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{32}\PY{p}{,} \PY{l+m+mi}{32}\PY{p}{)}\PY{p}{)}\PY{o}{.}\PY{n}{convert}\PY{p}{(}\PY{l+s}{'}\PY{l+s}{L}\PY{l+s}{'}\PY{p}{)}
+    \PY{n}{seq} \PY{o}{=} \PY{p}{[}\PY{n+nb}{sum}\PY{p}{(}\PY{n}{im}\PY{o}{.}\PY{n}{getpixel}\PY{p}{(}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{)}\PY{p}{)} \PY{o}{*}
+               \PY{n}{math}\PY{o}{.}\PY{n}{cos}\PY{p}{(}\PY{n}{math}\PY{o}{.}\PY{n}{pi} \PY{o}{/} \PY{l+m+mi}{32} \PY{o}{*} \PY{p}{(}\PY{n}{x} \PY{o}{+} \PY{o}{.}\PY{l+m+mi}{5}\PY{p}{)} \PY{o}{*} \PY{n}{u}\PY{p}{)} \PY{o}{*}
+               \PY{n}{math}\PY{o}{.}\PY{n}{cos}\PY{p}{(}\PY{n}{math}\PY{o}{.}\PY{n}{pi} \PY{o}{/} \PY{l+m+mi}{32} \PY{o}{*} \PY{p}{(}\PY{n}{y} \PY{o}{+} \PY{o}{.}\PY{l+m+mi}{5}\PY{p}{)} \PY{o}{*} \PY{n}{v}\PY{p}{)}
+               \PY{k}{for} \PY{n}{x} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{32}\PY{p}{)} \PY{k}{for} \PY{n}{y} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{32}\PY{p}{)}\PY{p}{)}
+           \PY{k}{for} \PY{n}{v} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{8}\PY{p}{)} \PY{k}{for} \PY{n}{u} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{8}\PY{p}{)}\PY{p}{]}
+    \PY{n}{avg} \PY{o}{=} \PY{n+nb}{sum}\PY{p}{(}\PY{n}{seq}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{:}\PY{p}{]}\PY{p}{)} \PY{o}{/} \PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{seq}\PY{p}{)} \PY{o}{-} \PY{l+m+mi}{1}\PY{p}{)}
+    \PY{n}{data} \PY{o}{=} \PY{n+nb}{map}\PY{p}{(}\PY{k}{lambda} \PY{n}{i}\PY{p}{:} \PY{l+m+mi}{0} \PY{k}{if} \PY{n}{i} \PY{o}{<} \PY{n}{avg} \PY{k}{else} \PY{l+m+mi}{1}\PY{p}{,} \PY{n}{seq}\PY{p}{)}
+    \PY{k}{return} \PY{n+nb}{reduce}\PY{p}{(}\PY{k}{lambda} \PY{n}{x}\PY{p}{,} \PY{p}{(}\PY{n}{y}\PY{p}{,} \PY{n}{z}\PY{p}{)}\PY{p}{:} \PY{n}{x} \PY{o}{|} \PY{p}{(}\PY{n}{z} \PY{o}{<<} \PY{n}{y}\PY{p}{)}\PY{p}{,}
+                  \PY{n+nb}{enumerate}\PY{p}{(}\PY{n+nb}{map}\PY{p}{(}\PY{n}{data}\PY{p}{)}\PY{p}{,}
+                  \PY{l+m+mi}{0}\PY{p}{)}
+\end{Verbatim}
